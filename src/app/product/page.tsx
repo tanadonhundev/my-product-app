@@ -13,9 +13,11 @@ import {
   InputLabel,
   FormControl,
   SelectChangeEvent,
+  Container,
 } from "@mui/material";
 import axios, { AxiosError } from "axios";
 import Navbar from "@/components/Nabar";
+import TableProduct from "@/components/TableProduct"
 
 // Define types for the product form data and error states
 type ProductFormData = {
@@ -53,7 +55,7 @@ export default function CreateProduct() {
   const handleSubmit = useCallback(async () => {
     const { name, price, category, description, quantity } = formData;
 
-    console.log(formData)
+    console.log(formData);
 
     if (!name || !price || !category || !description || quantity <= 0) {
       setError("กรุณากรอกข้อมูลให้ครบถ้วน");
@@ -205,6 +207,9 @@ export default function CreateProduct() {
           </Grid>
         </Grid>
       </Card>
+      <Container sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+        <TableProduct />
+      </Container>
     </div>
   );
 }

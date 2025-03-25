@@ -1,0 +1,55 @@
+/* Table container styling */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+  padding: 10px; /* Added padding for spacing */
+}
+
+/* Table base styling */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  table-layout: fixed; /* Added fixed table layout for better responsiveness */
+}
+
+/* Table header styling */
+.table th {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+  background-color: #89d4ff;
+  font-weight: bold;
+  position: sticky;
+  top: 0; /* Keeps header fixed at the top when scrolling */
+  z-index: 1; /* Ensures header stays on top */
+}
+
+/* Table cell styling */
+.table td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+/* Add specific styling for numeric columns */
+.table td.price, .table td.quantity {
+  text-align: right; /* Align numeric columns to the right */
+}
+
+/* Hover effect for rows */
+.table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+  .table {
+    font-size: 14px; /* Smaller font size for smaller screens */
+  }
+
+  .table th, .table td {
+    padding: 8px; /* Reduced padding for mobile */
+  }
+}
