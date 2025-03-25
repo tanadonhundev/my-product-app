@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   Button,
   TextField,
@@ -8,31 +8,99 @@ import {
   Card,
   CardHeader,
   Grid,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  SelectChangeEvent,
 } from "@mui/material";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Navbar from "@/components/Nabar";
 
-export default function CreateProduct() {
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+// Define types for the product form data and error states
+type ProductFormData = {
+  name: string;
+  price: string;
+  category: string;
+  description: string;
+  quantity: number;
+};
 
-  const handleSubmit = async () => {
-    if (!name || !price) {
+type ErrorState = string | null; // Error can be a string message or null
+
+// Define response types for the API
+type ProductResponse = {
+  success: boolean;
+  message: string;
+  data?: {
+    id: string;
+    name: string;
+    price: number;
+  };
+};
+
+export default function CreateProduct() {
+  const [formData, setFormData] = useState<ProductFormData>({
+    name: "",
+    price: "",
+    category: "",
+    description: "",
+    quantity: 0,
+  });
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<ErrorState>(null);
+
+  const handleSubmit = useCallback(async () => {
+    const { name, price, category, description, quantity } = formData;
+
+    console.log(formData)
+
+    if (!name || !price || !category || !description || quantity <= 0) {
       setError("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
     }
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/products", { name, price });
-      alert("สินค้าเพิ่มสำเร็จ");
+      // Use typed axios call
+      const response = await axios.post<ProductResponse>(
+        "http://localhost:5000/api/products",
+        {
+          name,
+          price,
+          category,
+          description,
+          quantity,
+        }
+      );
+
+      if (response.data.success) {
+        alert("สินค้าเพิ่มสำเร็จ");
+      } else {
+        setError(response.data.message);
+      }
     } catch (err) {
-      setError("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
+      const axiosError = err as AxiosError;
+      // setError(axiosError.response?.data?.message || "เกิดข้อผิดพลาดในการเพิ่มสินค้า");
     } finally {
       setLoading(false);
     }
+  }, [formData]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSelectChange = (e: SelectChangeEvent<string>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   return (
@@ -41,7 +109,7 @@ export default function CreateProduct() {
       <Card
         sx={{
           p: 3,
-          maxWidth: 400,
+          maxWidth: 1200,
           mx: "auto",
           mt: 4,
           boxShadow: 3,
@@ -53,23 +121,65 @@ export default function CreateProduct() {
           sx={{ textAlign: "center", fontWeight: "bold" }}
         />
         <Grid container spacing={2} justifyContent="center">
-          <Grid item xs={12}>
+          {/* First Row - Three Inputs */}
+          <Grid item xs={12} sm={4}>
             <TextField
               label="ชื่อสินค้า"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={formData.name}
+              onChange={handleInputChange}
               fullWidth
               variant="outlined"
+              name="name"
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={4}>
             <TextField
               label="ราคา"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
+              value={formData.price}
+              onChange={handleInputChange}
               fullWidth
               variant="outlined"
               type="number"
+              name="price"
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl fullWidth variant="outlined">
+              <InputLabel>หมวดหมู่</InputLabel>
+              <Select
+                value={formData.category}
+                onChange={handleSelectChange}
+                label="หมวดหมู่"
+                name="category"
+              >
+                <MenuItem value="เครื่องดื่ม">เครื่องดื่ม</MenuItem>
+                <MenuItem value="ขนม">ขนม</MenuItem>
+                <MenuItem value="เครื่องใช้ไฟฟ้า">เครื่องใช้ไฟฟ้า</MenuItem>
+                <MenuItem value="อื่นๆ">อื่นๆ</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {/* Second Row - Three Inputs */}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="คำอธิบายสินค้า"
+              value={formData.description}
+              onChange={handleInputChange}
+              fullWidth
+              variant="outlined"
+              name="description"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="จำนวนสินค้า"
+              value={formData.quantity}
+              onChange={handleInputChange}
+              fullWidth
+              variant="outlined"
+              type="number"
+              name="quantity"
             />
           </Grid>
           {error && (
