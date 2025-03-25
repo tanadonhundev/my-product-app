@@ -6,6 +6,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import "../style/TableProduct.css"; // Import the CSS file
+import { IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { EditLocation, EditOutlined } from "@mui/icons-material";
 
 // Define the data type
 type ProductData = {
@@ -15,6 +18,8 @@ type ProductData = {
   category: string;
   description: string;
   quantity: number;
+  deleteAction?: boolean;
+  editAction?: boolean;
 };
 
 export default function TableProduct() {
@@ -25,7 +30,8 @@ export default function TableProduct() {
       price: "50",
       category: "เครื่องดื่ม",
       description: "น้ำผลไม้สด",
-      quantity: 100,
+      quantity: 50,
+      deleteAction: false,
     },
     {
       id: 2,
@@ -50,22 +56,48 @@ export default function TableProduct() {
 
   // Define the columns using columnHelper
   const columns = [
+    columnHelper.accessor("editAction", {
+      header: "ลบ",
+      cell: () => (
+        <IconButton
+          // onClick={() => handleDelete(info.row.index)} // handleDelete is the function to handle the delete action
+          color="error"
+        >
+          <DeleteIcon />
+        </IconButton>
+      ),
+    }),
     columnHelper.accessor("name", {
       header: "ชื่อสินค้า",
-      cell: (info) => info.getValue(),
+      cell: ({ getValue }) => getValue(),
     }),
     columnHelper.accessor("price", {
       header: "ราคา",
-      cell: (info) => info.getValue(),
+      cell: ({ getValue }) => getValue(),
     }),
     columnHelper.accessor("category", {
       header: "หมวดหมู่",
-      cell: (info) => info.getValue(),
+      cell: ({ getValue }) => getValue(),
     }),
     columnHelper.accessor("quantity", {
       header: "จำนวน",
-      cell: (info) => info.getValue(),
+      cell: ({ getValue }) => getValue(),
     }),
+    columnHelper.accessor("description", {
+        header: "คำอธิบาย",
+        cell: ({ getValue }) => getValue(),
+      }),
+      columnHelper.accessor("editAction", {
+        header: "แก้ไข",
+        cell: () => (
+          <IconButton
+            // onClick={() => handleDelete(info.row.index)} // handleDelete is the function to handle the delete action
+            color="warning"
+          >
+            <EditOutlined/>
+          </IconButton>
+        ),
+      }),
   ];
 
   const table = useReactTable({

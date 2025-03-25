@@ -11,13 +11,13 @@
   width: 100%;
   border-collapse: collapse;
   background-color: #fff;
-  table-layout: fixed; /* Added fixed table layout for better responsiveness */
+  table-layout: auto; /* Changed to auto for cells to expand based on content */
 }
 
 /* Table header styling */
 .table th {
   padding: 12px;
-  text-align: left;
+  text-align: center;
   border: 1px solid #ddd;
   background-color: #89d4ff;
   font-weight: bold;
@@ -28,9 +28,9 @@
 
 /* Table cell styling */
 .table td {
-  padding: 12px;
-  text-align: left;
+  text-align: center;
   border: 1px solid #ddd;
+  padding: 12px; /* You can also set padding to control cell space */
 }
 
 /* Add specific styling for numeric columns */

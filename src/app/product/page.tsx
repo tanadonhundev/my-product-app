@@ -15,9 +15,9 @@ import {
   SelectChangeEvent,
   Container,
 } from "@mui/material";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import Navbar from "@/components/Nabar";
-import TableProduct from "@/components/TableProduct"
+import TableProduct from "@/components/TableProduct";
 
 // Define types for the product form data and error states
 type ProductFormData = {
@@ -63,30 +63,19 @@ export default function CreateProduct() {
     }
 
     setLoading(true);
-    try {
-      // Use typed axios call
-      const response = await axios.post<ProductResponse>(
-        "http://localhost:5000/api/products",
-        {
-          name,
-          price,
-          category,
-          description,
-          quantity,
-        }
-      );
 
-      if (response.data.success) {
-        alert("สินค้าเพิ่มสำเร็จ");
-      } else {
-        setError(response.data.message);
+    // Use typed axios call
+    const response = await axios.post<ProductResponse>(
+      "http://localhost:5000/api/products",
+      {
+        name,
+        price,
+        category,
+        description,
+        quantity,
       }
-    } catch (err) {
-      const axiosError = err as AxiosError;
-      // setError(axiosError.response?.data?.message || "เกิดข้อผิดพลาดในการเพิ่มสินค้า");
-    } finally {
-      setLoading(false);
-    }
+    );
+    console.log(response)
   }, [formData]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
